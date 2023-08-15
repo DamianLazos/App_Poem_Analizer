@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- INICIO: STYLESHEETS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/style.css') }}">
+    <!-- FIN: STYLESHEETS -->
+    <title>::Analisis Panel</title>
+</head>
+<body>
+
+    <header>
+        <h1 class="title">Analisis Panel</h1>
+    </header>
+
+    <main class="main__container">
+
+        <!--INICIO: POEMS LIST CONTAINER-->
+        <div class="section__container">
+            <h2 class="section-title">Poems List</h2>
+
+            {% for poem in poemsCollection %}
+                <div class="poem__container">
+                    <div class="poem-data">
+                        <p>ID: {{ poem._id }}</p>
+                    </div>
+                    
+                    <div class="poem-data">
+                        <p>Keywords: {{ poem.keywords }}</p>
+                    </div>
+                    
+                    <a href="{{ url_for('poems.poemsList', poemID=poem._id) }}">Read poem</a>
+                    <a href="#">Analize</a>
+                </div>
+            {% endfor %}
+        </div>
+        <!--FIN: POEMS LIST CONTAINER-->
+
+
+        <!--INICIO: POEM TEXT CONTAINER-->
+        <div class="section__container">
+            <h2 class="section-title">Poem text</h2>
+
+            <div class="poemText__container">
+                <p class="poemText">{{ poemText }}</p>
+            </div>
+        </div>
+        <!--FIN: POEM TEXT CONTAINER-->
+
+
+        <!-- INICIO: POEM ANALISIS -->
+        <div class="section__container">
+            <h2 class="section-title">Poem Analisis</h2>
+
+            <div class="poemAnalisis__container">
+
+            </div>
+        </div>
+        <!-- INICIO: POEM ANALISIS -->
+    </main>
+</body>
+</html>
