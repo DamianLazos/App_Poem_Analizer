@@ -31,8 +31,20 @@
                         <p>Keywords: {{ poem.keywords }}</p>
                     </div>
                     
-                    <a href="{{ url_for('poems.poemsList', poemID=poem._id) }}">Read poem</a>
-                    <a href="#">Analize</a>
+                    {% set read, analize = request.args.get("read"), request.args.get("analize") %}
+                        {% if read == None and analize == None %}
+                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, read=True, analize=False) }}">Read poem</a>
+                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, analize=True, read=False) }}">Analize</a>
+                        {% elif read == "True" and analize == "False"%}
+                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, read=True, analize=False) }}">Read poem</a>
+                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, analize=True, read=True) }}">Analize</a>
+                        {% elif read == "False" and analize == "True" %}
+                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, read=True, analize=True) }}">Read poem</a>
+                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, analize=True, read=False) }}">Analize</a>
+                        {% elif read == "True" and analize == "True" %}
+                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, read=True, analize=False) }}">Read poem</a>
+                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, analize=True, read=True) }}">Analize</a>
+                        {% endif %}
                 </div>
             {% endfor %}
         </div>
@@ -44,7 +56,9 @@
             <h2 class="section-title">Poem text</h2>
 
             <div class="poemText__container">
-                <p class="poemText">{{ poemText }}</p>
+                {% if request.args.get("read") == "True" %}
+                    <p class="poemText">{{ poemText }}</p>
+                {% endif %}
             </div>
         </div>
         <!--FIN: POEM TEXT CONTAINER-->
@@ -55,7 +69,9 @@
             <h2 class="section-title">Poem Analisis</h2>
 
             <div class="poemAnalisis__container">
-
+                {% if request.args.get("analize") == "True" %}
+                    <p>Aqui van los resultados del poema {{ request.args.get("poemID") }}</p>
+                {% endif %}
             </div>
         </div>
         <!-- INICIO: POEM ANALISIS -->

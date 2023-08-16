@@ -10,11 +10,15 @@ from flask import (
                     Blueprint,
                     render_template, 
                     )
+import pandas
+import nltk
+import spacy
 # ******************************OWN LIBRARIES*********************************
 from db import dbPostgres
 from src.forms import PoemForm
 from src.models import PoemModel
 from src.classes import PoemIndividual
+from src.functions import createPoemsCollection
 # ****************************************************************************
 blp = Blueprint("poems", __name__, template_folder="../templates", static_folder="../static")
 
@@ -41,33 +45,27 @@ def home():
 
 @blp.route("/poemsList")
 def poemsList():
-    poems = PoemModel.query.all()
-    poemsCollection = []
-    for poem in poems:
-        currentPoem = PoemIndividual(
-                                        _id=poem.id, 
-                                        poem=poem.poem,
-                                        title=poem.title, 
-                                        keywords=poem.keywords, 
-                                    )
-        poemsCollection.append(asdict(currentPoem))
+
+    # Creates a list of dictionaries with each poem data
+    poemsCollection = createPoemsCollection(dbModel=PoemModel)
+    
+    # Spacy instance
+    Spacy = spacy.load("es_core_news_sm")
+    for poemIndividual in poemsCollection:
+        poemText = poemIndividual["poem"]
+        poem = Spacy(poemText)
+        print(poem.ents.label_)
         
+        
+    
     try:
         poemID = request.args.get("poemID")
         selectedPoem = PoemModel.query.get_or_404(poemID)
         poemText = selectedPoem.poem
-        print("Se vino para el try")
         return render_template("analizer.html", poemsCollection=poemsCollection, poemText=poemText)
 
     except:
-        print("Se vino para el except")
         return render_template("analizer.html", poemsCollection=poemsCollection)
-
-# @blp.route("/readPoem")
-# def readPoem():
-#     poemID = request.args.get("poemID")
-#     poem = PoemModel.query.get_or_404(poemID)
-#     return redirect(url_for(".poemsList"))
 
 @blp.route("/poemAnalizer")
 def poemAnalizer():
