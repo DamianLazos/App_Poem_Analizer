@@ -1,4 +1,5 @@
-bitacora.txt
 venv
+config.py
+bitacora.txt
 .env
 .vscode
