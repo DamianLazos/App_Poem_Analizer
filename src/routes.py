@@ -2,6 +2,10 @@
 import json
 from dataclasses import asdict
 # ******************************EXTERNAL LIBRARIES****************************
+import nltk
+import spacy
+import pandas
+from spacy import displacy
 from flask import (
                     flash, 
                     request, 
@@ -10,15 +14,17 @@ from flask import (
                     Blueprint,
                     render_template, 
                     )
-import pandas
-import nltk
-import spacy
 # ******************************OWN LIBRARIES*********************************
 from db import dbPostgres
 from src.forms import PoemForm
 from src.models import PoemModel
-from src.classes import PoemIndividual
-from src.functions import createPoemsCollection
+from src.functions import (
+                            countPoemTags,
+                            getPoemEntities,
+                            createPoemRender,
+                            getPoemTagsByWord,
+                            createPoemsCollection,
+                            )
 # ****************************************************************************
 blp = Blueprint("poems", __name__, template_folder="../templates", static_folder="../static")
 
@@ -51,18 +57,41 @@ def poemsList():
     
     # Spacy instance
     Spacy = spacy.load("es_core_news_sm")
-    for poemIndividual in poemsCollection:
-        poemText = poemIndividual["poem"]
-        poem = Spacy(poemText)
-        print(poem.ents.label_)
-        
-        
-    
+
     try:
         poemID = request.args.get("poemID")
         selectedPoem = PoemModel.query.get_or_404(poemID)
         poemText = selectedPoem.poem
-        return render_template("analizer.html", poemsCollection=poemsCollection, poemText=poemText)
+        
+        # Individual poem process
+        for poemIndividual in poemsCollection:
+            poemText = poemIndividual["poem"]
+            
+            # New Spacy's document training
+            poem = Spacy(poemText)
+            
+            # Getting the entities of the document
+            poemEntities = getPoemEntities(poem=poem)
+            
+            # Display document's graphic render
+            poemRender = createPoemRender(poem=poem)
+            
+            # Document tags
+            poemTags = getPoemTagsByWord(poem=poem)
+        
+            # Count document's tags
+            poemTagsCounter = countPoemTags(poem=poem)
+        
+        
+        
+        return render_template("analizer.html", 
+                                poemText=poemText,
+                                poemTags=poemTags,
+                                poemRender=poemRender,
+                                poemEntities=poemEntities, 
+                                poemTagsCounter=poemTagsCounter,
+                                poemsCollection=poemsCollection, 
+                                )
 
     except:
         return render_template("analizer.html", poemsCollection=poemsCollection)

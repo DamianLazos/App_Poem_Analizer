@@ -71,10 +71,13 @@
             <div class="poemAnalisis__container">
                 {% if request.args.get("analize") == "True" %}
                     <p>Aqui van los resultados del poema {{ request.args.get("poemID") }}</p>
+
+                    {{ poemRender | safe }}
+
                 {% endif %}
             </div>
         </div>
-        <!-- INICIO: POEM ANALISIS -->
+        <!-- FIN: POEM ANALISIS -->
     </main>
 </body>
 </html>
