@@ -6,6 +6,7 @@ import nltk
 import spacy
 import pandas
 from spacy import displacy
+from spacy.matcher import Matcher
 from flask import (
                     flash, 
                     request, 
@@ -22,7 +23,9 @@ from src.functions import (
                             countPoemTags,
                             getPoemEntities,
                             createPoemRender,
+                            getPoemSentences,
                             getPoemTagsByWord,
+                            getPoemNounChunks,
                             createPoemsCollection,
                             )
 # ****************************************************************************
@@ -70,7 +73,7 @@ def poemsList():
             # New Spacy's document training
             poem = Spacy(poemText)
             
-            # Getting the entities of the document
+            # Get document's entities
             poemEntities = getPoemEntities(poem=poem)
             
             # Display document's graphic render
@@ -81,6 +84,17 @@ def poemsList():
         
             # Count document's tags
             poemTagsCounter = countPoemTags(poem=poem)
+            
+            # Get document's sentencess
+            poemSentences = getPoemSentences(poem=poem)
+            
+            # Get document's noun-chunks
+            poemNounChunks = getPoemNounChunks(poem=poem)
+            
+            # Get poem
+            poemMatches = Matcher(Spacy.vocab)
+            
+        
         
         
         
@@ -88,7 +102,9 @@ def poemsList():
                                 poemText=poemText,
                                 poemTags=poemTags,
                                 poemRender=poemRender,
-                                poemEntities=poemEntities, 
+                                poemEntities=poemEntities,
+                                poemSentences=poemSentences,
+                                poemNounChunks=poemNounChunks,
                                 poemTagsCounter=poemTagsCounter,
                                 poemsCollection=poemsCollection, 
                                 )
@@ -100,3 +116,4 @@ def poemsList():
 def poemAnalizer():
     
     return "Hello world"
+

@@ -40,12 +40,7 @@ def createPoemRender(poem) -> object:
     '''This method creates a displayed
     graphic render representation of 
     and specific SpaCy document.'''
-    poemRender = displacy.render(
-                                poem, 
-                                jupyter=False, 
-                                page=True, 
-                                minify=True
-                                )
+    poemRender = displacy.render(poem, jupyter=False)
     return poemRender
 
 def getPoemTagsByWord(poem) -> list:
@@ -63,7 +58,16 @@ def countPoemTags(poem) -> dict:
     poemTagsCounter = [(poem.vocab[index].text, value) for index, value in counter.items()]
     return poemTagsCounter
 
+def getPoemSentences(poem) -> list:
+    '''This function creates an array
+    with all the detected sentencess
+    of a poem.'''
+    poemSentences = [sentence for sentence in poem.sents]
+    return poemSentences
 
-
-
-
+def getPoemNounChunks(poem) -> list:
+    '''This function creates a list
+    with all the nouns founded into
+    a poem'''
+    poemNounChunks = [nounChunk.text for nounChunk in poem.noun_chunks]
+    return poemNounChunks
