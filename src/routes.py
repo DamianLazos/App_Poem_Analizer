@@ -15,6 +15,7 @@ from flask import (
                     Blueprint,
                     render_template, 
                     )
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 # ******************************OWN LIBRARIES*********************************
 from db import dbPostgres
 from src.forms import PoemForm
@@ -22,10 +23,12 @@ from src.models import PoemModel
 from src.functions import (
                             countPoemTags,
                             getPoemEntities,
+                            getPoemSentiment,
                             createPoemRender,
                             getPoemSentences,
                             getPoemTagsByWord,
                             getPoemNounChunks,
+                            getPoemKeywordMatches,
                             createPoemsCollection,
                             )
 # ****************************************************************************
@@ -60,6 +63,7 @@ def poemsList():
     
     # Spacy instance
     Spacy = spacy.load("es_core_news_sm")
+    
 
     try:
         poemID = request.args.get("poemID")
@@ -70,7 +74,7 @@ def poemsList():
         for poemIndividual in poemsCollection:
             poemText = poemIndividual["poem"]
             
-            # New Spacy's document training
+            # New Spacy's document creation
             poem = Spacy(poemText)
             
             # Get document's entities
@@ -81,7 +85,7 @@ def poemsList():
             
             # Document tags
             poemTags = getPoemTagsByWord(poem=poem)
-        
+
             # Count document's tags
             poemTagsCounter = countPoemTags(poem=poem)
             
@@ -91,22 +95,29 @@ def poemsList():
             # Get document's noun-chunks
             poemNounChunks = getPoemNounChunks(poem=poem)
             
-            # Get poem
-            poemMatches = Matcher(Spacy.vocab)
+            # Get poem keyword matches
+            poemKeywordMatches = getPoemKeywordMatches(
+                                                        poem=poem, 
+                                                        spacyVocab=Spacy.vocab, 
+                                                        poemKeywords=poemIndividual["keywords"].lower().split(", ")
+                                                        )
             
-        
-        
-        
-        
+            # Get poem sentiment calification
+            poemSentiment = getPoemSentiment(poem=poem)
+            
+
+
         return render_template("analizer.html", 
                                 poemText=poemText,
                                 poemTags=poemTags,
                                 poemRender=poemRender,
                                 poemEntities=poemEntities,
+                                poemSentiment=poemSentiment,
                                 poemSentences=poemSentences,
                                 poemNounChunks=poemNounChunks,
                                 poemTagsCounter=poemTagsCounter,
-                                poemsCollection=poemsCollection, 
+                                poemsCollection=poemsCollection,
+                                poemKeywordMatches=poemKeywordMatches 
                                 )
 
     except:
@@ -114,6 +125,5 @@ def poemsList():
 
 @blp.route("/poemAnalizer")
 def poemAnalizer():
-    
     return "Hello world"
 

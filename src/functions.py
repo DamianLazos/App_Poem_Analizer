@@ -4,6 +4,8 @@
 import spacy
 from spacy import displacy
 from dataclasses import asdict
+from spacy.matcher import Matcher
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 # ******************************OWN LIBRARIES*********************************
 from src.classes import PoemIndividual
 # ****************************************************************************
@@ -71,3 +73,48 @@ def getPoemNounChunks(poem) -> list:
     a poem'''
     poemNounChunks = [nounChunk.text for nounChunk in poem.noun_chunks]
     return poemNounChunks
+
+def getPoemKeywordMatches(poem, spacyVocab, poemKeywords) -> dict:
+    '''This function crates a poem's keywords 
+    dictionary with a list of the position
+    where that keyword is founded into the
+    poem'''
+    # 'Matcher' instance with the needed vocabulary
+    poemMatcher = Matcher(spacyVocab)
+    
+    # Pattern creation
+    pattern = [{"LOWER": {"IN": poemKeywords}}]
+    
+    # Agreggation of the pattern to the 'Matcher' object
+    poemMatcher.add("POEM_KEYWORDS", [pattern])
+    
+    # Look for matches
+    matches = poemMatcher(poem)
+    
+    # Creation of a word's matches list
+    wordsList = [(poem[start].text, start) for wordID, start, end in matches]
+    
+    # Keyword matches dictionary
+    matchesDictionary = {}
+    
+    # Dictionary construction process
+    for word, position in wordsList:
+        matchesDictionary.setdefault(word.lower(), []).append(position)
+    
+    # Final dictionary
+    return matchesDictionary
+
+def getPoemSentiment(poem) -> str:
+    '''This function determines a 
+    poem general sentiment in 
+    positive, negative or neutral'''
+    sentimentAnalyzer = SentimentIntensityAnalyzer()
+    poemSentiment = sentimentAnalyzer.polarity_scores(poem.text)
+    if poemSentiment["compound"] > 0.05:
+        sentiment = "positive"
+    elif poemSentiment["compound"] < -0.05:
+        sentiment = "negative"
+    else:
+        sentiment = "neutral"
+    return sentiment
+
