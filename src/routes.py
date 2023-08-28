@@ -16,6 +16,8 @@ from flask import (
                     render_template, 
                     )
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.decomposition import LatentDirichletAllocation
 # ******************************OWN LIBRARIES*********************************
 from db import dbPostgres
 from src.forms import PoemForm
@@ -26,6 +28,7 @@ from src.functions import (
                             getPoemSentiment,
                             createPoemRender,
                             getPoemSentences,
+                            getPoemMainWords,
                             getPoemTagsByWord,
                             getPoemNounChunks,
                             getPoemKeywordMatches,
@@ -64,13 +67,15 @@ def poemsList():
     # Spacy instance
     Spacy = spacy.load("es_core_news_sm")
     
-
+    # Spacy spanish model's stop words
+    stopWords = [ word for word in Spacy.Defaults.stop_words]
+    
     try:
         poemID = request.args.get("poemID")
         selectedPoem = PoemModel.query.get_or_404(poemID)
         poemText = selectedPoem.poem
         
-        # Individual poem process
+        # INDIVIDUAL POEM ANALYSIS
         for poemIndividual in poemsCollection:
             poemText = poemIndividual["poem"]
             
@@ -105,19 +110,23 @@ def poemsList():
             # Get poem sentiment calification
             poemSentiment = getPoemSentiment(poem=poem)
             
+            # Get poems topics & top 3 main words
+            poemMainWords = getPoemMainWords(poem=poemText, stopwords=stopWords)
+            
+                        
 
-
-        return render_template("analizer.html", 
+        return render_template("analizer.html",
                                 poemText=poemText,
                                 poemTags=poemTags,
                                 poemRender=poemRender,
                                 poemEntities=poemEntities,
+                                poemMainWords=poemMainWords,
                                 poemSentiment=poemSentiment,
                                 poemSentences=poemSentences,
                                 poemNounChunks=poemNounChunks,
                                 poemTagsCounter=poemTagsCounter,
                                 poemsCollection=poemsCollection,
-                                poemKeywordMatches=poemKeywordMatches 
+                                poemKeywordMatches=poemKeywordMatches, 
                                 )
 
     except:
@@ -126,4 +135,3 @@ def poemsList():
 @blp.route("/poemAnalizer")
 def poemAnalizer():
     return "Hello world"
-

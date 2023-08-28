@@ -6,6 +6,8 @@ from spacy import displacy
 from dataclasses import asdict
 from spacy.matcher import Matcher
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.decomposition import LatentDirichletAllocation
 # ******************************OWN LIBRARIES*********************************
 from src.classes import PoemIndividual
 # ****************************************************************************
@@ -117,4 +119,15 @@ def getPoemSentiment(poem) -> str:
     else:
         sentiment = "neutral"
     return sentiment
+
+def getPoemMainWords(poem, stopwords) -> list:
+    vectorizer = CountVectorizer(max_df=1.0, min_df=0.0, stop_words=stopwords)
+    data = vectorizer.fit_transform([poem])
+    model = LatentDirichletAllocation(n_components=2, random_state=90)
+    model.fit(data)
+    components = model.components_
+    for index, tema in enumerate(components):
+        wordsSorted = tema.argsort()[-3:]
+        poemTopWords = [vectorizer.get_feature_names_out()[word] for word in wordsSorted]
+    return poemTopWords
 
