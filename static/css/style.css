@@ -1,9 +1,14 @@
 :root {
+    --bar-color: 28, 28, 28;
+    --sectionColor: 27,28,33;
+    --labelColor: 255, 255, 255;
+    --buttonColor: 27,28,33;
+    --poem__containerColor: 70, 71, 79;
 
 }
 
 html {
-    background-color: rgb(7, 134, 246);
+    background-color: rgb(var(--bar-color));
     box-sizing: border-box;
     font-size: 62.5%;
 }
@@ -20,24 +25,29 @@ body {
 }
 
 /* INICIO: GENERAL STYLES */
-
-.title {
-    text-align: center;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 3rem;
-}
 .main__container {
+    background-color: rgb(var(--bar-color));
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     width: 100%;
-
+    gap: 1.5rem;
 }
 
 .section__container {
-    
+    background-color: rgb(var(--sectionColor));
+    border: 1px solid white;
+    display: flex;
+    flex-direction: column;
+    height: 87vh;
+    overflow: hidden;
+    overflow-y: scroll;
+    padding: 1.5rem;
+    gap: 1rem;
+    border-radius: 5px;
 }
 
 .section-title {
+    color: white;
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 2rem;
@@ -45,25 +55,213 @@ body {
 /* FIN: GENERAL STYLES */
 
 
-/* INICIO: POEMS LIST CONTAINER */
+/* INICIO: HOMEPAGE NEW POEM*/
+.header-pageTitle {
+    display: flex;
+    background-color: rgb(var(--bar-color));
+    height: 55px;
+    width: 100%;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+}
 
+.header-pageTitle h1 {
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-family: Helvetica, sans-serif
+}
+
+.homePage__container {
+    display: flex;
+}
+
+.section {
+    background-color: rgb(var(--sectionColor));
+    width: 50vw;
+    height: 100vh;
+}
+
+.section:nth-child(1) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid;
+}
+
+.newPoem__container {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+}
+
+.newPoem-requirementContainer {
+
+}
+
+.newPoem-requirementLabel {
+    color: rgb(var(--labelColor));
+    font-size: 2rem;
+    font-family: Helvetica, sans-serif;
+    font-weight: 100;
+}
+
+.newPoem-field {
+    width: 350px;
+    height: 30px;
+}
+
+.newPoem-textArea {
+    resize: none;
+    width: 350px;
+    height: 150px;
+}
+
+.homePage-wallpaper {
+    display: flex;
+    height: 100%;
+    background-image: url("/static/img/feather.jpeg");
+    background-size: 100%;
+    background-position: 0 -100px;
+    justify-content: center;
+    align-items: center;
+}
+
+.homePage-wallpaper a {
+    color: white;
+    border: .3px solid;
+    font-size: 2rem;
+    font-weight:100;
+    font-family: Helvetica, sans-serif;
+    padding: 3rem;
+    text-decoration: none;
+    transition: background-color .3s ease, border-radius .3s ease;
+}
+
+.homePage-wallpaper a:hover {
+    background-color: rgba(var(--bar-color), .5);
+    border-radius: 1rem;
+}
+
+.newPoem-buttom {
+    margin-top: 2rem;
+    background-color: rgb(var(--buttonColor));
+    color: white;
+    border: .3px solid;
+    font-size: 1.5rem;
+    font-weight:100;
+    font-family: Helvetica, sans-serif;
+    padding: 1rem;
+    text-decoration: none;
+    transition: background-color .3s ease, border-radius .3s ease;
+}
+
+.newPoem-buttom:hover {
+    background-color: rgba(var(--bar-color), .5);
+    border-radius: 1rem;
+}
+
+/* FIN: NEW POEM FORM */
+
+
+/* INICIO: POEMS LIST CONTAINER */
+.poem-data {
+    color: white;
+    font-family: Helvetica, sans-serif;
+}
+
+.actionButtoms__container {
+    display: flex;
+    justify-content: space-around;
+    font-family: Helvetica, sans-serif;
+}
+
+.actionButtoms__container a {
+    color: white;
+    text-decoration: none;
+    font-family: inherit;
+    border: 1px solid white;
+    padding: .5rem;
+    border-radius: 2px;
+    transition: background-color .2s ease, color .2s ease;
+}
+
+.actionButtoms__container a:hover {
+    color: black;
+    background-color: rgb(218, 218, 218);
+}
+
+.poem__container {
+    background-color: rgb(var(--poem__containerColor));
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 1rem;
+}
 /* FIN: POEMS LIST CONTAINER */
 
 
 /* INICIO: INDIVIDUAL POEM TEXT */
 .poemText__container {
-
+    /* color: white;
+    background-color: rgb(var(--poem__containerColor));
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 1rem; */
 }
 
 .poemText {
+    color: white;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 1.8rem;
+    font-weight: 100;
+    margin: 0;
 }
 /* FIN: INDIVIDUAL POEM TEXT */
 
 
-/* INICIO: POEM ANALISIS*/
-.poemAnalisis__container {
+/* INICIO: POEM ANALYSIS*/
+.poemAnalysis__container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    overflow: hidden;
+    gap: 1rem;
+}
 
+.poemAnalysis-section {
+    background-color: rgb(var(--poem__containerColor));
+    color: white;
+    font-family: Helvetica, sans-serif;
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 1rem;
+}
+
+.poemAnalysis-section h2 {
+    text-align: center;
+}
+
+.poemRender {
+    width: 10px;
+    height: 10px;
+    color: pink;
 }
 /* FIN: POEM ANALISIS */
+
+
+/* INICIO: FOOTER */
+.pageFooter {
+    background-color: rgb(var(--bar-color));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.pageFooter p {
+    color: white;
+    font-size: small;
+    font-family: Helvetica, sans-serif;
+}
+/* FIN: FOOTER */

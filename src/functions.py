@@ -3,6 +3,7 @@
 # ******************************EXTERNAL LIBRARIES****************************
 import spacy
 from spacy import displacy
+from flask import Response
 from dataclasses import asdict
 from spacy.matcher import Matcher
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -45,7 +46,12 @@ def createPoemRender(poem) -> object:
     graphic render representation of 
     and specific SpaCy document.'''
     poemRender = displacy.render(poem, jupyter=False)
-    return poemRender
+    
+    # Devuelve la imagen como una respuesta HTTP para su descarga
+    response = Response(poemRender, content_type='image/png')
+    response.headers['Content-Disposition'] = 'attachment; filename=poem_render.png'
+    return response
+    # return poemRender
 
 def getPoemTagsByWord(poem) -> list:
     '''This function gets all the tags

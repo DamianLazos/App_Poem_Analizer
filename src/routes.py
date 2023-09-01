@@ -1,23 +1,13 @@
 # ******************************PYTHON LIBRARIES******************************
-import json
-from dataclasses import asdict
+
 # ******************************EXTERNAL LIBRARIES****************************
-import nltk
 import spacy
-import pandas
-from spacy import displacy
-from spacy.matcher import Matcher
 from flask import (
                     flash, 
                     request, 
-                    url_for,
-                    redirect,
                     Blueprint,
                     render_template, 
                     )
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.decomposition import LatentDirichletAllocation
 # ******************************OWN LIBRARIES*********************************
 from db import dbPostgres
 from src.forms import PoemForm
@@ -57,7 +47,6 @@ def home():
     
     return render_template("home.html", form=form)
 
-
 @blp.route("/poemsList")
 def poemsList():
 
@@ -68,52 +57,46 @@ def poemsList():
     Spacy = spacy.load("es_core_news_sm")
     
     # Spacy spanish model's stop words
-    stopWords = [ word for word in Spacy.Defaults.stop_words]
+    stopWords = [ word for word in Spacy.Defaults.stop_words ]
     
     try:
         poemID = request.args.get("poemID")
         selectedPoem = PoemModel.query.get_or_404(poemID)
-        poemText = selectedPoem.poem
-        
-        # INDIVIDUAL POEM ANALYSIS
-        for poemIndividual in poemsCollection:
-            poemText = poemIndividual["poem"]
-            
-            # New Spacy's document creation
-            poem = Spacy(poemText)
-            
-            # Get document's entities
-            poemEntities = getPoemEntities(poem=poem)
-            
-            # Display document's graphic render
-            poemRender = createPoemRender(poem=poem)
-            
-            # Document tags
-            poemTags = getPoemTagsByWord(poem=poem)
+        poemText = selectedPoem.poem        
 
-            # Count document's tags
-            poemTagsCounter = countPoemTags(poem=poem)
-            
-            # Get document's sentencess
-            poemSentences = getPoemSentences(poem=poem)
-            
-            # Get document's noun-chunks
-            poemNounChunks = getPoemNounChunks(poem=poem)
-            
-            # Get poem keyword matches
-            poemKeywordMatches = getPoemKeywordMatches(
-                                                        poem=poem, 
-                                                        spacyVocab=Spacy.vocab, 
-                                                        poemKeywords=poemIndividual["keywords"].lower().split(", ")
-                                                        )
-            
-            # Get poem sentiment calification
-            poemSentiment = getPoemSentiment(poem=poem)
-            
-            # Get poems topics & top 3 main words
-            poemMainWords = getPoemMainWords(poem=poemText, stopwords=stopWords)
-            
-                        
+        # New Spacy's document creation
+        poem = Spacy(poemText)
+
+        # Get document's entities
+        poemEntities = getPoemEntities(poem=poem)
+        
+        # Display document's graphic render
+        poemRender = createPoemRender(poem=poem)
+        
+        # Document tags by word
+        poemTags = getPoemTagsByWord(poem=poem)
+
+        # Count document's tags
+        poemTagsCounter = countPoemTags(poem=poem)
+        
+        # Get document's sentencess
+        poemSentences = getPoemSentences(poem=poem)
+        
+        # Get document's noun-chunks
+        poemNounChunks = getPoemNounChunks(poem=poem)
+        
+        # Get poem keyword matches
+        poemKeywordMatches = getPoemKeywordMatches(
+                                                    poem=poem, 
+                                                    spacyVocab=Spacy.vocab, 
+                                                    poemKeywords=selectedPoem.keywords.lower().split(", ")
+                                                    )
+        
+        # Get poem sentiment calification
+        poemSentiment = getPoemSentiment(poem=poem)
+        
+        # Get poems topics & top 3 main words
+        poemMainWords = getPoemMainWords(poem=poemText, stopwords=stopWords)
 
         return render_template("analizer.html",
                                 poemText=poemText,
@@ -131,7 +114,3 @@ def poemsList():
 
     except:
         return render_template("analizer.html", poemsCollection=poemsCollection)
-
-@blp.route("/poemAnalizer")
-def poemAnalizer():
-    return "Hello world"

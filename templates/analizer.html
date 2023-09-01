@@ -1,3 +1,5 @@
+{% from "./macros/macros.html" import pageFooter %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,12 +13,11 @@
 </head>
 <body>
 
-    <header>
-        <h1 class="title">Analisis Panel</h1>
+    <header class="header-pageTitle">
+        <h1>Analisis Panel</h1>
     </header>
 
     <main class="main__container">
-
         <!--INICIO: POEMS LIST CONTAINER-->
         <div class="section__container">
             <h2 class="section-title">Poems List</h2>
@@ -31,20 +32,22 @@
                         <p>Keywords: {{ poem.keywords }}</p>
                     </div>
                     
-                    {% set read, analize = request.args.get("read"), request.args.get("analize") %}
-                        {% if read == None and analize == None %}
-                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, read=True, analize=False) }}">Read poem</a>
-                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, analize=True, read=False) }}">Analize</a>
-                        {% elif read == "True" and analize == "False"%}
-                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, read=True, analize=False) }}">Read poem</a>
-                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, analize=True, read=True) }}">Analize</a>
-                        {% elif read == "False" and analize == "True" %}
-                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, read=True, analize=True) }}">Read poem</a>
-                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, analize=True, read=False) }}">Analize</a>
-                        {% elif read == "True" and analize == "True" %}
-                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, read=True, analize=False) }}">Read poem</a>
-                            <a href="{{ url_for('poems.poemsList', poemID=poem._id, analize=True, read=True) }}">Analize</a>
-                        {% endif %}
+                    <div class="actionButtoms__container">
+                        {% set read, analize = request.args.get("read"), request.args.get("analize") %}
+                            {% if read == None and analize == None %}
+                                <a href="{{ url_for('poems.poemsList', poemID=poem._id, read=True, analize=False) }}">Read poem</a>
+                                <a href="{{ url_for('poems.poemsList', poemID=poem._id, analize=True, read=False) }}">Analize</a>
+                            {% elif read == "True" and analize == "False"%}
+                                <a href="{{ url_for('poems.poemsList', poemID=poem._id, read=True, analize=False) }}">Read poem</a>
+                                <a href="{{ url_for('poems.poemsList', poemID=poem._id, analize=True, read=True) }}">Analize</a>
+                            {% elif read == "False" and analize == "True" %}
+                                <a href="{{ url_for('poems.poemsList', poemID=poem._id, read=True, analize=True) }}">Read poem</a>
+                                <a href="{{ url_for('poems.poemsList', poemID=poem._id, analize=True, read=False) }}">Analize</a>
+                            {% elif read == "True" and analize == "True" %}
+                                <a href="{{ url_for('poems.poemsList', poemID=poem._id, read=True, analize=False) }}">Read poem</a>
+                                <a href="{{ url_for('poems.poemsList', poemID=poem._id, analize=True, read=True) }}">Analize</a>
+                            {% endif %}
+                    </div>
                 </div>
             {% endfor %}
         </div>
@@ -57,7 +60,11 @@
 
             <div class="poemText__container">
                 {% if request.args.get("read") == "True" %}
-                    <p class="poemText">{{ poemText }}</p>
+                    <!-- <p class="poemText">{{ poemText }}</p> -->
+                    {% for line in poemText.split("\n") %}
+                        <p class="poemText">{{ line }}</p>
+                        </br>
+                    {% endfor %}
                 {% endif %}
             </div>
         </div>
@@ -68,16 +75,90 @@
         <div class="section__container">
             <h2 class="section-title">Poem Analisis</h2>
 
-            <div class="poemAnalisis__container">
+            <div class="poemAnalysis__container">
                 {% if request.args.get("analize") == "True" %}
-                    <p>Aqui van los resultados del poema {{ request.args.get("poemID") }}</p>
 
-                    {{ poemRender | safe }}
+                    <!-- INICIO: POEM ENTITIES -->
+                    <div class="poemAnalysis-section">
+                        <h2>Poem Entities</h2>
+                        {% for entity, text in poemEntities.items() %}
+                            <span>{{ entity }}: </span>
+                            {% for part in text %}
+                                <ul>
+                                    <li>{{ part }}</li>
+                                </ul>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    <!-- FIN: POEM ENTITIES -->
+
+
+                    <!-- INICIO: POEM SPOT RENDER -->
+                    <div class="poemAnalysis-section">
+                        <h2>Poem Render Spot</h2>
+                        <a href="{{ url_for('poems.poemsList') }}" download="poem_render.png">
+                            <button>Download</button>
+                        </a>
+                    </div>
+                    <!-- FIN: POEM SPOT RENDER -->
+
+
+                    <!-- INICIO: POEM TAGS BY WORD -->
+                    <div class="poemAnalysis-section">
+                        <h2>Poem Tags by Word</h2>
+                        <table>
+                            <th>Tag</th>
+                            <th>Word</th>
+                            {% for part, tag in poemTags%}
+                                <tr>
+                                    <td>{{ tag }}</td>
+                                    <td>{{ part }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    <!-- FIN: POEM TAGS -->
+
+
+                    <!-- INICIO: POEM TAGS COUNT -->
+                
+                
+                    <!-- FIN: POEM TAGS COUNT-->
+
+
+                    <!-- INICIO: POEM SENTENCES -->
+                    
+                    <!-- FIN: POEM SENTENCES -->
+
+
+                    <!-- INICIO: POEM NON CHUNKS -->
+                    
+                    <!-- FIN: POEM NON CHUNKS -->
+
+
+                    <!-- INICIO: POEM KEYWORD MATCHES -->
+                    
+                    <!-- FIN: POEM KEYWORD MATCHES -->
+
+
+                    <!-- INICIO: POEM SENTIMENT CALIFICATION -->
+                    
+                    <!-- FIN: POEM SENTIMENT CALIFICATION -->
+
+
+                    <!-- INICIO: POEM TOP 3 MAIN WORDS -->
+                    
+                    <!-- FIN: POEM TOP 3 MAIN WORDS -->
+
 
                 {% endif %}
             </div>
         </div>
         <!-- FIN: POEM ANALISIS -->
     </main>
+
+    <!-- INICIO: FOOTER -->
+        {{ pageFooter() }}
+    <!-- FIN: FOOTER -->
 </body>
 </html>

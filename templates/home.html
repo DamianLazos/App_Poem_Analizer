@@ -1,3 +1,5 @@
+{% from "./macros/macros.html" import pageFooter %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,26 +10,50 @@
     <title>::Poems Analizer</title>
 </head>
 <body>
-    <header>
+    <header class="header-pageTitle">
         <h1>Poems Analizer</h1>
     </header>
 
-    <div>
-        <form action="{{ url_for('poems.home') }}" method="POST">
-            {{ form.hidden_tag() }}
+    <main class="homePage__container">
+        <div class="section">
+            <form action="{{ url_for('poems.home') }}" method="POST" class="newPoem__container">
+                {{ form.hidden_tag() }}
 
-            {{ form.keywords.label }}
-            {{ form.keywords }}
+                <div class="newPoem-requirementContainer">
+                    <p class="newPoem-requirementLabel">
+                        {{ form.title.label }}
+                    </p>
+                    {{ form.title(class="newPoem-field") }}
+                </div>
 
-            {{ form.title.label }}
-            {{ form.title }}
+                <div class="newPoem-requirementContainer">
+                    <p class="newPoem-requirementLabel">
+                        {{ form.keywords.label }}
+                    </p>
+                    {{ form.keywords(class="newPoem-field") }}
+                </div>
 
-            {{ form.poem.label }}
-            {{ form.poem }}
-    
-            {{ form.submit }}
-        </form>
-    </div>
+                <div class="newPoem-requirementContainer">
+                    <p class="newPoem-requirementLabel">
+                        {{ form.poem.label }}
+                    </p>
+                    {{ form.poem(class="newPoem-textArea") }}
+                </div>
+
+                <div class="newPoem-requirementContainer">
+                    {{ form.submit(class="newPoem-buttom") }}
+                </div>
+            </form>
+        </div>
+
+        <div class="section">
+            <div class="homePage-wallpaper">
+                <a href="{{ url_for('poems.poemsList') }}">Go to analizer</a>
+            </div>
+
+        </div>
+    </main>
+
 
     {% with message = get_flashed_messages() %}
         {% if message %}
@@ -35,7 +61,10 @@
         {% endif %}
     {% endwith %}
 
-    <a href="{{ url_for('poems.poemsList') }}">Go to analizer</a>
-    
+
+    <!-- INICIO: FOOTER -->
+    {{ pageFooter() }}
+    <!-- FIN: FOOTER -->
 </body>
+
 </html>

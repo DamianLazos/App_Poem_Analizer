@@ -8,8 +8,8 @@ from wtforms.validators import InputRequired
 
 # ****************************************************************************
 class PoemForm(FlaskForm):
-    keywords = StringField("Palabra(s) claves", validators=[InputRequired()])
+    keywords = StringField("Keyword(s)", validators=[InputRequired()])
     title = StringField("Titulo")
     poem = TextAreaField("Poema", validators=[InputRequired()])
-    submit = SubmitField("submit")
+    submit = SubmitField("Submit")
     
