@@ -107,10 +107,12 @@
                     <div class="poemAnalysis-section">
                         <h2>Poem Tags by Word</h2>
                         <table>
+                            <th>#</th>
                             <th>Tag</th>
                             <th>Word</th>
-                            {% for part, tag in poemTags%}
+                            {% for part, tag in poemTags %}
                                 <tr>
+                                    <td>{{ loop.index }}</td>
                                     <td>{{ tag }}</td>
                                     <td>{{ part }}</td>
                                 </tr>
@@ -121,23 +123,72 @@
 
 
                     <!-- INICIO: POEM TAGS COUNT -->
-                
-                
+                    <div class="poemAnalysis-section">
+                        <h2>Poem Tags Count</h2>
+
+                        <table>
+                            <th>#</th>
+                            <th>Tag</th>
+                            <th>Total</th>
+                            
+                            {% for tag, total in poemTagsCounter %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ tag }}</td>
+                                    <td>{{ total }}</td>
+                                </tr>
+                            {% endfor  %}
+                        </table>
+                    </div>
                     <!-- FIN: POEM TAGS COUNT-->
 
 
                     <!-- INICIO: POEM SENTENCES -->
+                    <div class="poemAnalysis-section">
+                        <h2>Poem Senteces</h2>
+
+                        <div>
+                            {% for sentence in poemSentences %}
+                                <p class="sentencesBox">{{ sentence }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
                     
                     <!-- FIN: POEM SENTENCES -->
 
 
                     <!-- INICIO: POEM NON CHUNKS -->
-                    
+                    <div class="poemAnalysis-section">
+                        <h2>Poem Non-Chunks</h2>
+
+                        <table>
+                            <th>#</th>
+                            <th>Non-Chunk</th>
+
+                            {% for nonChunk in poemNounChunks %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ nonChunk }}</td>
+                                </tr>
+                            {% endfor  %}
+                        </table>
+                    </div>
                     <!-- FIN: POEM NON CHUNKS -->
 
 
                     <!-- INICIO: POEM KEYWORD MATCHES -->
-                    
+                    <div class="poemAnalysis-section">
+                        <h2>Poem Keyword Matches</h2>
+
+                        {% for keyword, positions in poemKeywordMatches.items() %}
+                        <p>{{ keyword }}:</p>
+                        <ul>
+                            {% for position in positions %}
+                            <li>position: {{ position }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endfor %}
+                    </div>
                     <!-- FIN: POEM KEYWORD MATCHES -->
 
 
@@ -149,8 +200,6 @@
                     <!-- INICIO: POEM TOP 3 MAIN WORDS -->
                     
                     <!-- FIN: POEM TOP 3 MAIN WORDS -->
-
-
                 {% endif %}
             </div>
         </div>

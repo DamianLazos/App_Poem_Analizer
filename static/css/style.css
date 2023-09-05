@@ -224,8 +224,6 @@ body {
 .poemAnalysis__container {
     display: flex;
     flex-direction: column;
-    overflow-y: scroll;
-    overflow: hidden;
     gap: 1rem;
 }
 
@@ -246,6 +244,27 @@ body {
     width: 10px;
     height: 10px;
     color: pink;
+}
+
+table {
+    width: 100%;
+    border: 1px solid white;
+    border-collapse: collapse;
+}
+
+th,
+tr,
+td {
+    border: 1px solid white;
+}
+
+td {
+    padding: .5rem;
+}
+
+.sentencesBox {
+    border: 1px solid white;
+    padding: .5rem;
 }
 /* FIN: POEM ANALISIS */
 
